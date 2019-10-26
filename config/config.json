@@ -1,0 +1,26 @@
+{
+  "development": {
+    "username": "stock_user",
+    "password": "M1a4$1t4E8r0",
+    "database": "stock",
+    "host": "127.0.0.1",
+    "dialect": "mysql",
+    "operatorsAliases": false
+  },
+  "test": {
+    "username": "stock_user",
+    "password": "M1a4$1t4E8r0",
+    "database": "stock",
+    "host": "127.0.0.1",
+    "dialect": "mysql",
+    "operatorsAliases": false
+  },
+  "production": {
+    "username": "stock_user",
+    "password": "M1a4$1t4E8r0",
+    "database": "stock",
+    "host": "127.0.0.1",
+    "dialect": "mysql",
+    "operatorsAliases": false
+  }
+}
