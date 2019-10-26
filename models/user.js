@@ -5,14 +5,12 @@ const { throwErr } = require('../helpers')
 
 module.exports = (sequelize, type) => {
   const User = sequelize.define('user', {
-    fullName: type.STRING,
-    username: type.STRING,
-    dni: type.NUMERIC,
-    cuit: type.STRING,
-    phone: type.STRING,
+    userName: type.STRING,
+    password: type.STRING,
     email: type.STRING,
-    address: type.STRING,
-    password: type.STRING
+    profileId: type.STRING,
+    companyId: type.STRING,
+    statusId: type.STRING
   })
 
   User.beforeSave(async (user, options) => {
