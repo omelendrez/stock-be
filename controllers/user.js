@@ -5,8 +5,8 @@ const Op = Sequelize.Op
 const { noProps } = require('../helpers')
 
 const create = async (req, res) => {
-  const { email, username } = req.body
-  const user = await User.findOne({ where: { [Op.or]: [{ email }, { username }] } })
+  const { email, userName } = req.body
+  const user = await User.findOne({ where: { [Op.or]: [{ email }, { userName }] } })
   if (user) {
     return res
       .status(400)
@@ -28,6 +28,8 @@ const create = async (req, res) => {
 module.exports.create = create
 
 const getAll = (req, res) => {
+  console.log(User)
+
   return User
     .findAll({ tableHint: TableHints.NOLOCK })
     .then(users => res
@@ -39,7 +41,7 @@ module.exports.getAll = getAll
 const auth = async (req, res) => {
   const { email, password } = req.body
   const user = await User
-    .findOne({ where: { [Op.or]: [{ email }, { username: email }] } })
+    .findOne({ where: { [Op.or]: [{ email }, { userName: email }] } })
   if (!user) {
     return res
       .status(401)
@@ -53,7 +55,7 @@ const auth = async (req, res) => {
       .json({ success: false, message: 'Contraseña incorrecta' })
   }
 
-  const userData = { ...user.getData(), ...noProps }
+  const userData = { ...user.toJSON(), ...noProps }
   res
     .status(200)
     .json({ success: true, message: 'Acceso autorizado', user: userData, token: user.getToken() })
