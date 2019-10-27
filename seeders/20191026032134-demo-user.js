@@ -2,9 +2,9 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.bulkInsert('Users', [{
-      userName: "Omar",
-      password: "master1*",
+    return queryInterface.bulkInsert('users', [{
+      userName: "omar",
+      password: "$2b$10$/mVqA0JTbgYdnpVBVRRjHeRtUssjQP9blC62RvmVHnIBErP4AGHmG",
       email: "omar.melendrez@gmail.com",
       profileId: 1,
       companyId: 1,
@@ -13,9 +13,9 @@ module.exports = {
       updatedAt: new Date()
     },
     {
-      userName: "Emanuel",
-      password: "ema2019",
-      email: "emanuel@gmail.com",
+      userName: "ema",
+      password: "$2b$10$yauQGkielQowp6QFYQ8cL.6BGFe/7PLFZ/o6GWZR8YCJdEcMjhw5e",
+      email: "emarengo73@gmail.com",
       profileId: 1,
       companyId: 1,
       statusId: 1,
@@ -23,9 +23,9 @@ module.exports = {
       updatedAt: new Date()
     },
     {
-      userName: "Matias",
-      password: "mati2019",
-      email: "matias@gmail.com",
+      userName: "mati",
+      password: "$2b$10$yPv9V6moZvlRHfzP6JqlHuDdnHKzcvZjoyiKyC0KjehOgRd8HqbaK",
+      email: "matias41071034@gmail.com",
       profileId: 1,
       companyId: 1,
       statusId: 1,
@@ -35,6 +35,6 @@ module.exports = {
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.bulkDelete('Users', null, {});
+    return queryInterface.bulkDelete('users', null, {});
   }
 };

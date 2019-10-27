@@ -5,7 +5,8 @@
     "database": "stock",
     "host": "127.0.0.1",
     "dialect": "mysql",
-    "operatorsAliases": false
+    "logging": false,
+    "timezone": "-03:00"
   },
   "test": {
     "username": "stock_user",
@@ -13,7 +14,8 @@
     "database": "stock",
     "host": "127.0.0.1",
     "dialect": "mysql",
-    "operatorsAliases": false
+    "logging": false,
+    "timezone": "-03:00"
   },
   "production": {
     "username": "stock_user",
@@ -21,6 +23,7 @@
     "database": "stock",
     "host": "127.0.0.1",
     "dialect": "mysql",
-    "operatorsAliases": false
+    "logging": false,
+    "timezone": "-03:00"
   }
 }

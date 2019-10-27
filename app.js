@@ -67,4 +67,3 @@ module.exports = app
 process.on('unhandledRejection', error => {
   console.error('Uncaught Error', pe(error))
 })
-
