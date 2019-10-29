@@ -28,8 +28,6 @@ const create = async (req, res) => {
 module.exports.create = create
 
 const getAll = (req, res) => {
-  console.log(User)
-
   return User
     .findAll({ tableHint: TableHints.NOLOCK })
     .then(users => res
