@@ -29,7 +29,7 @@ module.exports.create = create
 
 const getAll = (req, res) => {
   return User
-    .findAll({ tableHint: TableHints.NOLOCK })
+    .findAll({ tableHint: TableHints.NOLOCK, attributes: ['id', 'userName'] })
     .then(users => res
       .status(200)
       .json({ success: true, users }))

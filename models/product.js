@@ -10,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     lastSaleDate: DataTypes.DATE,
     lastSalePrice: DataTypes.DECIMAL,
     price: DataTypes.DECIMAL,
+    companyId: DataTypes.INTEGER,
     statusId: DataTypes.INTEGER
   }, {});
   product.associate = function (models) {
