@@ -1,4 +1,4 @@
-const Category = require('../models').category
+const Customer = require('../models').customer
 const Sequelize = require('sequelize')
 const TableHints = Sequelize.TableHints;
 const updateOrCreate = require('../helpers').updateOrCreate
@@ -6,7 +6,7 @@ const Op = Sequelize.Op
 
 const create = async (req, res) => {
   const { id } = req.body
-  await updateOrCreate(Category,
+  await updateOrCreate(Customer,
     {
       id: {
         [Op.eq]: id
@@ -22,23 +22,23 @@ const create = async (req, res) => {
 module.exports.create = create
 
 const getAll = (req, res) => {
-  return Category
-    .findAll({ tableHint: TableHints.NOLOCK, attributes: ['id', 'code', 'name', 'companyId'] })
-    .then(categories => res
+  return Customer
+    .findAll({ tableHint: TableHints.NOLOCK, attributes: ['id', 'code', 'name', 'address', 'phone', 'email', 'contact', 'vat', 'companyId', 'statusId'] })
+    .then(customers => res
       .status(200)
-      .json({ success: true, categories }))
+      .json({ success: true, customers }))
 }
 module.exports.getAll = getAll
 
 const deleteRecord = (req, res) => {
-  return Category
+  return Customer
     .findOne({
       where: {
         id: req.params.id
       }
     })
-    .then(category =>
-      category.destroy().then(result => {
+    .then(customer =>
+      customer.destroy().then(result => {
         res.status(204).json(result)
       })
     )
