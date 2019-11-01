@@ -3,6 +3,7 @@ const Sequelize = require('sequelize')
 const TableHints = Sequelize.TableHints;
 const Op = Sequelize.Op
 const { noProps } = require('../helpers')
+const sequelize = require("sequelize");
 
 const create = async (req, res) => {
   const { email, userName } = req.body
@@ -28,8 +29,42 @@ const create = async (req, res) => {
 module.exports.create = create
 
 const getAll = (req, res) => {
+  const Company = require("../models").company;
+  const Profile = require("../models").profile;
+  const Status = require("../models").status;
+  User.belongsTo(Company);
+  User.belongsTo(Profile);
+  User.belongsTo(Status);
   return User
-    .findAll({ tableHint: TableHints.NOLOCK, attributes: ['id', 'userName'] })
+    .findAll({
+      raw: true,
+      tableHint: TableHints.NOLOCK, attributes: ['id', 'userName', 'email'],
+      include: [{
+        model: Profile,
+        where: {
+          id: sequelize.col('user.profileId')
+        },
+        attributes: [
+          ['id', 'profileId'], 'name'
+        ]
+      }, {
+        model: Company,
+        where: {
+          id: sequelize.col('user.companyId')
+        },
+        attributes: [
+          ['id', 'companyId'], 'name'
+        ]
+      }, {
+        model: Status,
+        where: {
+          id: sequelize.col('user.statusId')
+        },
+        attributes: [
+          ['id', 'statusId'], 'name'
+        ]
+      }]
+    })
     .then(users => res
       .status(200)
       .json({ success: true, users }))
