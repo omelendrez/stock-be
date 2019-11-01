@@ -23,7 +23,7 @@ module.exports.create = create
 
 const getAll = (req, res) => {
   return Company
-    .findAll({ tableHint: TableHints.NOLOCK, attributes: ['id', 'code', 'name'] })
+    .findAll({ tableHint: TableHints.NOLOCK, attributes: ['id', 'code', 'name', 'statusId'] })
     .then(companies => res
       .status(200)
       .json({ success: true, companies }))
