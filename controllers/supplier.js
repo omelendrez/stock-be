@@ -3,6 +3,7 @@ const Sequelize = require('sequelize')
 const TableHints = Sequelize.TableHints;
 const updateOrCreate = require('../helpers').updateOrCreate
 const Op = Sequelize.Op
+const sequelize = require("sequelize");
 
 const create = async (req, res) => {
   const { id } = req.body
@@ -22,8 +23,33 @@ const create = async (req, res) => {
 module.exports.create = create
 
 const getAll = (req, res) => {
+  const Company = require("../models").company;
+  const Status = require("../models").status;
+  Supplier.belongsTo(Company);
+  Supplier.belongsTo(Status);
   return Supplier
-    .findAll({ tableHint: TableHints.NOLOCK, attributes: ['id', 'code', 'name', 'address', 'phoneNumber', 'contact', 'companyId', 'statusId'] })
+    .findAll({
+      raw: true,
+      tableHint: TableHints.NOLOCK, attributes: ['id', 'code', 'name', 'address', 'phoneNumber', 'contact'],
+      include: [{
+        model: Company,
+        where: {
+          id: sequelize.col('supplier.companyId')
+        },
+        attributes: [
+          ['id', 'companyId'], 'name'
+        ]
+      }, {
+        model: Status,
+        where: {
+          id: sequelize.col('supplier.statusId')
+        },
+        attributes: [
+          ['id', 'statusId'], 'name'
+        ]
+      }]
+
+    })
     .then(suppliers => res
       .status(200)
       .json({ success: true, suppliers }))

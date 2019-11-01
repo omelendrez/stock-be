@@ -3,6 +3,7 @@ const Sequelize = require('sequelize')
 const TableHints = Sequelize.TableHints;
 const updateOrCreate = require('../helpers').updateOrCreate
 const Op = Sequelize.Op
+const sequelize = require("sequelize");
 
 const create = async (req, res) => {
   const { id } = req.body
@@ -22,8 +23,21 @@ const create = async (req, res) => {
 module.exports.create = create
 
 const getAll = (req, res) => {
+  const Company = require("../models").company;
+  Unit.belongsTo(Company);
   return Unit
-    .findAll({ tableHint: TableHints.NOLOCK, attributes: ['id', 'code', 'name', 'companyId'] })
+    .findAll({
+      raw: true, tableHint: TableHints.NOLOCK, attributes: ['id', 'code', 'name'],
+      include: [{
+        model: Company,
+        where: {
+          id: sequelize.col('unit.companyId')
+        },
+        attributes: [
+          ['id', 'companyId'], 'name'
+        ]
+      }]
+    })
     .then(units => res
       .status(200)
       .json({ success: true, units }))

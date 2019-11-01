@@ -3,6 +3,7 @@ const Sequelize = require('sequelize')
 const TableHints = Sequelize.TableHints;
 const updateOrCreate = require('../helpers').updateOrCreate
 const Op = Sequelize.Op
+const sequelize = require("sequelize");
 
 const create = async (req, res) => {
   const { id } = req.body
@@ -22,8 +23,42 @@ const create = async (req, res) => {
 module.exports.create = create
 
 const getAll = (req, res) => {
+  const Category = require("../models").category;
+  const Company = require("../models").company;
+  const Status = require("../models").status;
+  Product.belongsTo(Category);
+  Product.belongsTo(Company);
+  Product.belongsTo(Status);
   return Product
-    .findAll({ tableHint: TableHints.NOLOCK, attributes: ['id', 'code', 'name', 'categoryId', 'minimum', 'lastPurchaseDate', 'lastPurchasePrice', 'lastSaleDate', 'lastSalePrice', 'price', 'companyId', 'statusId'] })
+    .findAll({
+      raw: true,
+      tableHint: TableHints.NOLOCK, attributes: ['id', 'code', 'name', 'minimum', 'lastPurchaseDate', 'lastPurchasePrice', 'lastSaleDate', 'lastSalePrice', 'price'],
+      include: [{
+        model: Category,
+        where: {
+          id: sequelize.col('product.categoryId')
+        },
+        attributes: [
+          ['id', 'categoryId'], 'name'
+        ]
+      }, {
+        model: Company,
+        where: {
+          id: sequelize.col('product.companyId')
+        },
+        attributes: [
+          ['id', 'companyId'], 'name'
+        ]
+      }, {
+        model: Status,
+        where: {
+          id: sequelize.col('product.statusId')
+        },
+        attributes: [
+          ['id', 'statusId'], 'name'
+        ]
+      }]
+    })
     .then(products => res
       .status(200)
       .json({ success: true, products }))
