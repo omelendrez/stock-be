@@ -27,15 +27,15 @@ const getAll = (req, res) => {
   Unit.belongsTo(Company);
   return Unit
     .findAll({
-      raw: true, tableHint: TableHints.NOLOCK, attributes: ['id', 'code', 'name'],
+      raw: true, tableHint: TableHints.NOLOCK, attributes: ['id', 'code', 'name',
+        'companyId', [sequelize.col('company.name'), 'company']
+      ],
       include: [{
         model: Company,
         where: {
           id: sequelize.col('unit.companyId')
         },
-        attributes: [
-          ['id', 'companyId'], 'name'
-        ]
+        attributes: []
       }]
     })
     .then(units => res

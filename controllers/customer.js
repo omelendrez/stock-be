@@ -31,23 +31,19 @@ const getAll = (req, res) => {
   return Customer
     .findAll({
       raw: true,
-      tableHint: TableHints.NOLOCK, attributes: ['id', 'code', 'name', 'address', 'phone', 'email', 'contact', 'vat'],
+      tableHint: TableHints.NOLOCK, attributes: ['id', 'code', 'name', 'address', 'phone', 'email', 'contact', 'vat', 'companyId', [sequelize.col('company.name'), 'company'], 'statusId', [sequelize.col('status.name'), 'status']],
       include: [{
         model: Company,
         where: {
           id: sequelize.col('customer.companyId')
         },
-        attributes: [
-          ['id', 'companyId'], 'name'
-        ]
+        attributes: []
       }, {
         model: Status,
         where: {
           id: sequelize.col('customer.statusId')
         },
-        attributes: [
-          ['id', 'statusId'], 'name'
-        ]
+        attributes: []
       }]
     })
     .then(customers => res

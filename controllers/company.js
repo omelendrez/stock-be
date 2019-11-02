@@ -28,16 +28,13 @@ const getAll = (req, res) => {
   return Company
     .findAll({
       raw: true,
-      tableHint: TableHints.NOLOCK, attributes: ['id', 'code', 'name'],
+      tableHint: TableHints.NOLOCK, attributes: ['id', 'code', 'name', 'statusId', [sequelize.col('status.name'), 'status']],
       include: [{
         model: Status,
         where: {
           id: sequelize.col('company.statusId')
         },
-        attributes: [
-          ['id', 'statusId'], 'name'
-
-        ]
+        attributes: []
       }]
     })
     .then(companies => res

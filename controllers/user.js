@@ -38,31 +38,29 @@ const getAll = (req, res) => {
   return User
     .findAll({
       raw: true,
-      tableHint: TableHints.NOLOCK, attributes: ['id', 'userName', 'email'],
+      tableHint: TableHints.NOLOCK, attributes: ['id', 'userName', 'email',
+        'companyId', [sequelize.col('company.name'), 'company'],
+        'statusId', [sequelize.col('status.name'), 'status'],
+        'profileId', [sequelize.col('profile.name'), 'profile']
+      ],
       include: [{
         model: Profile,
         where: {
           id: sequelize.col('user.profileId')
         },
-        attributes: [
-          ['id', 'profileId'], 'name'
-        ]
+        attributes: []
       }, {
         model: Company,
         where: {
           id: sequelize.col('user.companyId')
         },
-        attributes: [
-          ['id', 'companyId'], 'name'
-        ]
+        attributes: []
       }, {
         model: Status,
         where: {
           id: sequelize.col('user.statusId')
         },
-        attributes: [
-          ['id', 'statusId'], 'name'
-        ]
+        attributes: []
       }]
     })
     .then(users => res

@@ -32,31 +32,29 @@ const getAll = (req, res) => {
   return Product
     .findAll({
       raw: true,
-      tableHint: TableHints.NOLOCK, attributes: ['id', 'code', 'name', 'minimum', 'lastPurchaseDate', 'lastPurchasePrice', 'lastSaleDate', 'lastSalePrice', 'price'],
+      tableHint: TableHints.NOLOCK, attributes: ['id', 'code', 'name', 'minimum', 'lastPurchaseDate', 'lastPurchasePrice', 'lastSaleDate', 'lastSalePrice', 'price',
+        'categoryId', [sequelize.col('category.name'), 'category'],
+        'companyId', [sequelize.col('company.name'), 'company'],
+        'statusId', [sequelize.col('status.name'), 'status']
+      ],
       include: [{
         model: Category,
         where: {
           id: sequelize.col('product.categoryId')
         },
-        attributes: [
-          ['id', 'categoryId'], 'name'
-        ]
+        attributes: []
       }, {
         model: Company,
         where: {
           id: sequelize.col('product.companyId')
         },
-        attributes: [
-          ['id', 'companyId'], 'name'
-        ]
+        attributes: []
       }, {
         model: Status,
         where: {
           id: sequelize.col('product.statusId')
         },
-        attributes: [
-          ['id', 'statusId'], 'name'
-        ]
+        attributes: []
       }]
     })
     .then(products => res

@@ -30,23 +30,22 @@ const getAll = (req, res) => {
   return Store
     .findAll({
       raw: true,
-      tableHint: TableHints.NOLOCK, attributes: ['id', 'code', 'name'],
+      tableHint: TableHints.NOLOCK, attributes: ['id', 'code', 'name',
+        'companyId', [sequelize.col('company.name'), 'company'],
+        'statusId', [sequelize.col('status.name'), 'status'],
+      ],
       include: [{
         model: Company,
         where: {
           id: sequelize.col('store.companyId')
         },
-        attributes: [
-          ['id', 'companyId'], 'name'
-        ]
+        attributes: []
       }, {
         model: Status,
         where: {
           id: sequelize.col('store.statusId')
         },
-        attributes: [
-          ['id', 'statusId'], 'name'
-        ]
+        attributes: []
       }]
     })
     .then(stores => res

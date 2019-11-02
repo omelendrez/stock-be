@@ -28,14 +28,13 @@ const getAll = (req, res) => {
   return Category
     .findAll({
       raw: true,
-      tableHint: TableHints.NOLOCK, attributes: ['id', 'code', 'name'],
+      tableHint: TableHints.NOLOCK, attributes: ['id', 'code', 'name', 'companyId', [sequelize.col('company.name'), 'company']],
       include: [{
         model: Company,
         where: {
           id: sequelize.col('category.companyId')
         },
         attributes: [
-          ['id', 'companyId'], 'name'
         ]
       }]
 
