@@ -92,3 +92,19 @@ const auth = async (req, res) => {
     .json({ success: true, message: 'Acceso autorizado', user: userData, token: user.getToken() })
 }
 module.exports.auth = auth
+
+const deleteRecord = (req, res) => {
+  return User
+    .findOne({
+      where: {
+        id: req.params.id
+      }
+    })
+    .then(user =>
+      user.destroy().then(result => {
+        res.status(204).json(result)
+      })
+    )
+    .catch(error => res.status(400).send(error))
+}
+module.exports.deleteRecord = deleteRecord

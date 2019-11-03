@@ -54,6 +54,7 @@ router.delete('/api/units/:id', Unit.deleteRecord)
 
 router.get('/api/users', User.getAll)
 router.post('/api/users', User.create)
+router.delete('/api/users/:id', User.deleteRecord)
 router.post('/api/auth', User.auth)
 
 module.exports = router
