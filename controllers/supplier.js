@@ -1,9 +1,9 @@
 const Supplier = require('../models').supplier
 const Sequelize = require('sequelize')
 const TableHints = Sequelize.TableHints;
-const updateOrCreate = require('../helpers').updateOrCreate
 const Op = Sequelize.Op
 const sequelize = require("sequelize");
+const { ReS, ReE, updateOrCreate } = require('../helpers')
 
 const create = async (req, res) => {
   const { id } = req.body
@@ -15,10 +15,14 @@ const create = async (req, res) => {
     },
     req.body
   )
-    .then(() => res
-      .status(201)
-      .json({ success: true })
-    )
+    .then(record => {
+      const resp = {
+        message: 'Proveedor creado/actualizado',
+        account: record
+      }
+      return ReS(res, resp, 201)
+    })
+    .catch(err => ReE(res, err, 422))
 }
 module.exports.create = create
 
@@ -52,6 +56,7 @@ const getAll = (req, res) => {
     .then(suppliers => res
       .status(200)
       .json({ success: true, suppliers }))
+    .catch(err => ReE(res, err, 422))
 }
 module.exports.getAll = getAll
 
@@ -63,10 +68,16 @@ const deleteRecord = (req, res) => {
       }
     })
     .then(supplier =>
-      supplier.destroy().then(result => {
-        res.status(204).json(result)
-      })
+      supplier.destroy()
+        .then(supplier => {
+          const resp = {
+            message: `Proveedor "${supplier.name}" eliminada`,
+            supplier
+          }
+          return ReS(res, resp, 200)
+        })
+        .catch(() => ReE(res, 'Error ocurrido intentando eliminar el proveedor'))
     )
-    .catch(error => res.status(400).send(error))
+    .catch(() => ReE(res, 'Error ocurrido intentando eliminar el proveedor'))
 }
 module.exports.deleteRecord = deleteRecord

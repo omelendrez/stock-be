@@ -1,9 +1,9 @@
 const Unit = require('../models').unit
 const Sequelize = require('sequelize')
 const TableHints = Sequelize.TableHints;
-const updateOrCreate = require('../helpers').updateOrCreate
 const Op = Sequelize.Op
 const sequelize = require("sequelize");
+const { ReS, ReE, updateOrCreate } = require('../helpers')
 
 const create = async (req, res) => {
   const { id } = req.body
@@ -15,10 +15,14 @@ const create = async (req, res) => {
     },
     req.body
   )
-    .then(() => res
-      .status(201)
-      .json({ success: true })
-    )
+    .then(record => {
+      const resp = {
+        message: 'Unidad de medida creada/actualizada',
+        account: record
+      }
+      return ReS(res, resp, 201)
+    })
+    .catch(err => ReE(res, err, 422))
 }
 module.exports.create = create
 
@@ -41,6 +45,7 @@ const getAll = (req, res) => {
     .then(units => res
       .status(200)
       .json({ success: true, units }))
+    .catch(err => ReE(res, err, 422))
 }
 module.exports.getAll = getAll
 
@@ -52,10 +57,16 @@ const deleteRecord = (req, res) => {
       }
     })
     .then(unit =>
-      unit.destroy().then(result => {
-        res.status(204).json(result)
-      })
+      unit.destroy()
+        .then(unit => {
+          const resp = {
+            message: `Unidad de medida "${unit.name}" eliminada`,
+            unit
+          }
+          return ReS(res, resp, 200)
+        })
+        .catch(() => ReE(res, 'Error ocurrido intentando eliminar la unidad de medida'))
     )
-    .catch(error => res.status(400).send(error))
+    .catch(() => ReE(res, 'Error ocurrido intentando eliminar la unidad de medida'))
 }
 module.exports.deleteRecord = deleteRecord

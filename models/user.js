@@ -5,12 +5,37 @@ const CONFIG = require('../config')
 
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('user', {
-    userName: DataTypes.STRING,
+    userName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        len: {
+          args: [6, 30],
+          msg: 'Nombre de usuario debe tener entre 6 y 30 caracteres.'
+        },
+        notEmpty: { msg: 'Nombre de usuario es un campo obligatorio.' }
+      },
+      unique: {
+        args: 'uniqueKey',
+        msg: 'Nombre de usuario ya existe en la base de datos.'
+      }
+    },
     password: DataTypes.STRING,
-    email: DataTypes.STRING,
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: {
+        args: 'uniqueKey',
+        msg: 'Email ya existe en la base de datos.'
+      },
+      validate: { isEmail: { msg: 'Email no es válido.' } }
+    },
     profileId: DataTypes.INTEGER,
     companyId: DataTypes.INTEGER,
-    statusId: DataTypes.INTEGER
+    statusId: {
+      type: DataTypes.TINYINT,
+      defaultValue: 1
+    }
   }, {})
   User.associate = function (models) {
     // associations can be defined here
@@ -41,6 +66,10 @@ module.exports = (sequelize, DataTypes) => {
     }
     const token = jwt.sign(params, CONFIG.jwt_encryption, { expiresIn: expiration_time })
     return `Bearer ${token}`
+  }
+  User.prototype.data = function () {
+    let json = this.toJSON()
+    return json
   }
 
   return User

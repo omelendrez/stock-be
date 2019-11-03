@@ -1,8 +1,26 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const product = sequelize.define('product', {
-    code: DataTypes.STRING,
-    name: DataTypes.STRING,
+  const Product = sequelize.define('product', {
+    code: {
+      type: DataTypes.STRING,
+      validate: {
+        notEmpty: { msg: 'Código es un campo obligatorio' }
+      },
+      unique: {
+        args: 'uniqueKey',
+        msg: 'El código ingresado ya existe en la base de datos'
+      }
+    },
+    name: {
+      type: DataTypes.STRING,
+      validate: {
+        notEmpty: { msg: 'Nombre de producto es un campo obligatorio' }
+      },
+      unique: {
+        args: 'uniqueKey',
+        msg: 'Nombre de producto ya existe en la base de datos'
+      }
+    },
     categoryId: DataTypes.INTEGER,
     minimum: DataTypes.INTEGER,
     lastPurchaseDate: DataTypes.DATE,
@@ -11,10 +29,17 @@ module.exports = (sequelize, DataTypes) => {
     lastSalePrice: DataTypes.DECIMAL,
     price: DataTypes.DECIMAL,
     companyId: DataTypes.INTEGER,
-    statusId: DataTypes.INTEGER
+    statusId: {
+      type: DataTypes.TINYINT,
+      defaultValue: 1
+    }
   }, {});
-  product.associate = function (models) {
+  Product.associate = function (models) {
     // associations can be defined here
   };
-  return product;
+  Product.prototype.data = function () {
+    let json = this.toJSON()
+    return json
+  }
+  return Product;
 };

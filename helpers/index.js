@@ -8,19 +8,35 @@ module.exports.noProps = {
   updatedAt: undefined
 }
 
-module.exports.updateOrCreate = (model, where, newItem, beforeCreate, res) => {
-  return model
-    .findOne({ where })
-    .then(item => {
-      if (!item) {
-        Promise.resolve(beforeCreate)
-          .then(() =>
-            model.create(newItem)
-              .then(item => item)
-          )
-      }
-      return model
-        .update(newItem, { where: where })
-        .then(item => item)
-    })
+module.exports.updateOrCreate = (model, where, newItem, beforeCreate) => {
+  return new Promise((resolve, reject) => {
+    model
+      .findOne({ where })
+      .then(item => {
+        if (!item) {
+          model.create(newItem)
+            .then(item => resolve(item.data()))
+        }
+        model
+          .update(newItem, { where: where })
+          .then(item => resolve(item.data()))
+      })
+  })
+}
+
+module.exports.ReE = (res, err, code) => {
+  if (typeof err === 'object' && typeof err.message) {
+    err = err.message
+  }
+  if (typeof code !== 'undefined') res.statusCode = code
+  return res.json({ success: false, error: err })
+}
+
+module.exports.ReS = (res, data, code) => {
+  let send_data = { success: true }
+  if (typeof data === 'object') {
+    send_data = Object.assign(data, send_data) // merge the objects
+  }
+  if (typeof code !== 'undefined') res.statusCode = code
+  return res.json(send_data)
 }
