@@ -18,7 +18,7 @@ const create = async (req, res) => {
     .then(record => {
       const resp = {
         message: 'Compañía creada/actualizada',
-        account: record
+        record
       }
       return ReS(res, resp, 201)
     })
