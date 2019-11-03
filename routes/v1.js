@@ -14,7 +14,7 @@ const User = require('../controllers/user')
 
 router.get('/api/categories', Category.getAll)
 router.post('/api/categories', Category.create)
-router.delete('/api/categories', Category.deleteRecord)
+router.delete('/api/categories/:id', Category.deleteRecord)
 
 router.get('/api/companies', Company.getAll)
 router.post('/api/companies', Company.create)
