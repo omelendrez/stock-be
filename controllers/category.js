@@ -1,9 +1,9 @@
 const Category = require('../models').category
 const Sequelize = require('sequelize')
 const TableHints = Sequelize.TableHints;
-const updateOrCreate = require('../helpers').updateOrCreate
 const Op = Sequelize.Op
 const sequelize = require("sequelize");
+const { ReS, ReE, updateOrCreate } = require('../helpers')
 
 const create = async (req, res) => {
   const { id } = req.body
@@ -15,10 +15,14 @@ const create = async (req, res) => {
     },
     req.body
   )
-    .then(() => res
-      .status(201)
-      .json({ success: true })
-    )
+    .then(record => {
+      const resp = {
+        message: 'Categoría creada/actualizada',
+        account: record
+      }
+      return ReS(res, resp, 201)
+    })
+    .catch(err => ReE(res, err, 422))
 }
 module.exports.create = create
 
@@ -42,6 +46,8 @@ const getAll = (req, res) => {
     .then(categories => res
       .status(200)
       .json({ success: true, categories }))
+    .catch(err => ReE(res, err, 422))
+
 }
 module.exports.getAll = getAll
 
@@ -53,10 +59,16 @@ const deleteRecord = (req, res) => {
       }
     })
     .then(category =>
-      category.destroy().then(result => {
-        res.status(204).json(result)
-      })
+      category.destroy()
+        .then(category => {
+          const resp = {
+            message: `Categoría "${category.name}" eliminada`,
+            category
+          }
+          return ReS(res, resp, 200)
+        })
+        .catch(() => ReE(res, 'Error ocurrido intentando eliminar la categoría'))
     )
-    .catch(error => res.status(400).send(error))
+    .catch(() => ReE(res, 'Error ocurrido intentando eliminar la categoría'))
 }
 module.exports.deleteRecord = deleteRecord

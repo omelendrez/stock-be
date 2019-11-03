@@ -1,8 +1,8 @@
 const Status = require('../models').status
 const Sequelize = require('sequelize')
 const TableHints = Sequelize.TableHints;
-const updateOrCreate = require('../helpers').updateOrCreate
 const Op = Sequelize.Op
+const { ReS, ReE, updateOrCreate } = require('../helpers')
 
 const create = async (req, res) => {
   const { id } = req.body
@@ -14,10 +14,14 @@ const create = async (req, res) => {
     },
     req.body
   )
-    .then(() => res
-      .status(201)
-      .json({ success: true })
-    )
+    .then(record => {
+      const resp = {
+        message: 'Status creado/actualizado',
+        account: record
+      }
+      return ReS(res, resp, 201)
+    })
+    .catch(err => ReE(res, err, 422))
 }
 module.exports.create = create
 
@@ -27,6 +31,7 @@ const getAll = (req, res) => {
     .then(statuses => res
       .status(200)
       .json({ success: true, statuses }))
+    .catch(err => ReE(res, err, 422))
 }
 module.exports.getAll = getAll
 
@@ -38,10 +43,16 @@ const deleteRecord = (req, res) => {
       }
     })
     .then(status =>
-      status.destroy().then(result => {
-        res.status(204).json(result)
-      })
+      status.destroy()
+        .then(status => {
+          const resp = {
+            message: `Status "${status.name}" eliminado`,
+            status
+          }
+          return ReS(res, resp, 200)
+        })
+        .catch(() => ReE(res, 'Error ocurrido intentando eliminar el status'))
     )
-    .catch(error => res.status(400).send(error))
+    .catch(() => ReE(res, 'Error ocurrido intentando eliminar el status'))
 }
 module.exports.deleteRecord = deleteRecord

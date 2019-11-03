@@ -1,11 +1,33 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const profile = sequelize.define('profile', {
-    code: DataTypes.STRING,
-    name: DataTypes.STRING
+  const Profile = sequelize.define('profile', {
+    code: {
+      type: DataTypes.STRING,
+      validate: {
+        notEmpty: { msg: 'Código es un campo obligatorio' }
+      },
+      unique: {
+        args: 'uniqueKey',
+        msg: 'El código ingresado ya existe en la base de datos'
+      }
+    },
+    name: {
+      type: DataTypes.STRING,
+      validate: {
+        notEmpty: { msg: 'Nombre de perfil es un campo obligatorio' }
+      },
+      unique: {
+        args: 'uniqueKey',
+        msg: 'Nombre de perfil ya existe en la base de datos'
+      }
+    },
   }, {});
-  profile.associate = function(models) {
+  Profile.associate = function (models) {
     // associations can be defined here
   };
-  return profile;
+  Profile.prototype.data = function () {
+    let json = this.toJSON()
+    return json
+  }
+  return Profile;
 };

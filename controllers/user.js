@@ -2,8 +2,8 @@ const User = require('../models').user
 const Sequelize = require('sequelize')
 const TableHints = Sequelize.TableHints;
 const Op = Sequelize.Op
-const { noProps } = require('../helpers')
 const sequelize = require("sequelize");
+const { ReS, ReE, updateOrCreate, noProps } = require('../helpers')
 
 const create = async (req, res) => {
   const { email, userName } = req.body
@@ -14,17 +14,14 @@ const create = async (req, res) => {
       .json({ success: false, message: 'Usuario o email ya registrado' })
   }
   return User.create(req.body)
-    .then(user => {
-      const data = { success: true, message: 'Ok', user: { ...user.toJSON(), password: undefined } }
-      res
-        .status(201)
-        .json(data)
+    .then(record => {
+      const resp = {
+        message: 'Usuario creado/actualizado',
+        account: record
+      }
+      return ReS(res, resp, 201)
     })
-    .catch(err => {
-      res
-        .status(500)
-        .json({ success: false, message: 'Error insertando datos', err })
-    })
+    .catch(err => ReE(res, err, 422))
 }
 module.exports.create = create
 
@@ -66,6 +63,7 @@ const getAll = (req, res) => {
     .then(users => res
       .status(200)
       .json({ success: true, users }))
+    .catch(err => ReE(res, err, 422))
 }
 module.exports.getAll = getAll
 
@@ -101,10 +99,16 @@ const deleteRecord = (req, res) => {
       }
     })
     .then(user =>
-      user.destroy().then(result => {
-        res.status(204).json(result)
-      })
+      user.destroy()
+        .then(user => {
+          const resp = {
+            message: `Usuario "${user.userName}" eliminado`,
+            user
+          }
+          return ReS(res, resp, 200)
+        })
+        .catch(() => ReE(res, 'Error ocurrido intentando eliminar el usuario'))
     )
-    .catch(error => res.status(400).send(error))
+    .catch(() => ReE(res, 'Error ocurrido intentando eliminar el usuario'))
 }
 module.exports.deleteRecord = deleteRecord

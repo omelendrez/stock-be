@@ -1,13 +1,38 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const store = sequelize.define('store', {
-    code: DataTypes.STRING,
-    name: DataTypes.STRING,
+  const Store = sequelize.define('store', {
+    code: {
+      type: DataTypes.STRING,
+      validate: {
+        notEmpty: { msg: 'Código es un campo obligatorio' }
+      },
+      unique: {
+        args: 'uniqueKey',
+        msg: 'El código ingresado ya existe en la base de datos'
+      }
+    },
+    name: {
+      type: DataTypes.STRING,
+      validate: {
+        notEmpty: { msg: 'Nombre de depósito es un campo obligatorio' }
+      },
+      unique: {
+        args: 'uniqueKey',
+        msg: 'Nombre de depósito ya existe en la base de datos'
+      }
+    },
     companyId: DataTypes.INTEGER,
-    statusId: DataTypes.INTEGER
+    statusId: {
+      type: DataTypes.TINYINT,
+      defaultValue: 1
+    }
   }, {});
-  store.associate = function(models) {
+  Store.associate = function (models) {
     // associations can be defined here
   };
-  return store;
+  Store.prototype.data = function () {
+    let json = this.toJSON()
+    return json
+  }
+  return Store;
 };

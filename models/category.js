@@ -1,12 +1,35 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const category = sequelize.define('category', {
-    code: DataTypes.STRING,
-    name: DataTypes.STRING,
+  const Category = sequelize.define('category', {
+    code: {
+      type: DataTypes.STRING,
+      validate: {
+        notEmpty: { msg: 'Código es un campo obligatorio' }
+      },
+      unique: {
+        args: 'uniqueKey',
+        msg: 'El código ingresado ya existe en la base de datos'
+      }
+    },
+    name: {
+      type: DataTypes.STRING,
+      validate: {
+        notEmpty: { msg: 'Nombre de categoría es un campo obligatorio' }
+      },
+      unique: {
+        args: 'uniqueKey',
+        msg: 'Nombre de categoría ya existe en la base de datos'
+      }
+    },
     companyId: DataTypes.INTEGER
   }, {});
-  category.associate = function(models) {
+  Category.associate = function (models) {
     // associations can be defined here
   };
-  return category;
+  Category.prototype.data = function () {
+    let json = this.toJSON()
+    return json
+  }
+
+  return Category;
 };
