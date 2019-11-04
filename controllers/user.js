@@ -16,7 +16,7 @@ const create = async (req, res) => {
   return User.create(req.body)
     .then(record => {
       const resp = {
-        message: 'Usuario creado/actualizado',
+        message: 'Datos guardados satisfactoriamente',
         record
       }
       return ReS(res, resp, 201)
