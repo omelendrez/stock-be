@@ -17,7 +17,7 @@ const create = async (req, res) => {
   )
     .then(record => {
       const resp = {
-        message: 'Unidad de medida creada/actualizada',
+        message: 'Datos guardados satisfactoriamente',
         record
       }
       return ReS(res, resp, 201)
