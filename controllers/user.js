@@ -91,24 +91,4 @@ const auth = async (req, res) => {
 }
 module.exports.auth = auth
 
-const deleteRecord = (req, res) => {
-  return User
-    .findOne({
-      where: {
-        id: req.params.id
-      }
-    })
-    .then(user =>
-      user.destroy()
-        .then(user => {
-          const resp = {
-            message: `Usuario "${user.userName}" eliminado`,
-            user
-          }
-          return ReS(res, resp, 200)
-        })
-        .catch(() => ReE(res, 'Error ocurrido intentando eliminar el usuario'))
-    )
-    .catch(() => ReE(res, 'Error ocurrido intentando eliminar el usuario'))
-}
-module.exports.deleteRecord = deleteRecord
+module.exports.deleteRecord = (req, res) => ReE(res, 'La tabla de usuarios es una tabla reservada y sus registros no pueden ser eliminados')

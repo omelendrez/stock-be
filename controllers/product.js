@@ -28,9 +28,11 @@ module.exports.create = create
 
 const getAll = (req, res) => {
   const Category = require("../models").category;
+  const Unit = require("../models").unit;
   const Company = require("../models").company;
   const Status = require("../models").status;
   Product.belongsTo(Category);
+  Product.belongsTo(Unit);
   Product.belongsTo(Company);
   Product.belongsTo(Status);
   return Product
@@ -38,6 +40,7 @@ const getAll = (req, res) => {
       raw: true,
       tableHint: TableHints.NOLOCK, attributes: ['id', 'code', 'name', 'minimum', 'lastPurchaseDate', 'lastPurchasePrice', 'lastSaleDate', 'lastSalePrice', 'price',
         'categoryId', [sequelize.col('category.name'), 'category'],
+        'unitId', [sequelize.col('unit.name'), 'unit'],
         'companyId', [sequelize.col('company.name'), 'company'],
         'statusId', [sequelize.col('status.name'), 'status']
       ],
@@ -45,6 +48,12 @@ const getAll = (req, res) => {
         model: Category,
         where: {
           id: sequelize.col('product.categoryId')
+        },
+        attributes: []
+      }, {
+        model: Unit,
+        where: {
+          id: sequelize.col('product.unitId')
         },
         attributes: []
       }, {

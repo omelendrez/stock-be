@@ -4,26 +4,7 @@ const TableHints = Sequelize.TableHints;
 const Op = Sequelize.Op
 const { ReS, ReE, updateOrCreate } = require('../helpers')
 
-const create = async (req, res) => {
-  const { id } = req.body
-  await updateOrCreate(Status,
-    {
-      id: {
-        [Op.eq]: id
-      }
-    },
-    req.body
-  )
-    .then(record => {
-      const resp = {
-        message: 'Datos guardados satisfactoriamente',
-        record
-      }
-      return ReS(res, resp, 201)
-    })
-    .catch(err => ReE(res, err, 422))
-}
-module.exports.create = create
+module.exports.create = (req, res) => ReE(res, 'La tabla de status es una tabla reservada y su contenido no puede ser modificado')
 
 const getAll = (req, res) => {
   return Status
@@ -35,24 +16,4 @@ const getAll = (req, res) => {
 }
 module.exports.getAll = getAll
 
-const deleteRecord = (req, res) => {
-  return Status
-    .findOne({
-      where: {
-        id: req.params.id
-      }
-    })
-    .then(status =>
-      status.destroy()
-        .then(status => {
-          const resp = {
-            message: `Status "${status.name}" eliminado`,
-            status
-          }
-          return ReS(res, resp, 200)
-        })
-        .catch(() => ReE(res, 'Error ocurrido intentando eliminar el status'))
-    )
-    .catch(() => ReE(res, 'Error ocurrido intentando eliminar el status'))
-}
-module.exports.deleteRecord = deleteRecord
+module.exports.deleteRecord = (req, res) => ReE(res, 'La tabla de status es una tabla reservada y sus registros no pueden ser eliminados')
