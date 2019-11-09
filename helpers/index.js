@@ -45,3 +45,18 @@ module.exports.ReS = (res, data, code) => {
   if (typeof code !== 'undefined') res.statusCode = code
   return res.json(send_data)
 }
+
+module.exports.verifyDelete = (models, where) => {
+  return new Promise((resolve, reject) => {
+    const promises = []
+    models.map(model => {
+      const Model = require('../models')[model]
+      promises.push(Model.findAll({ where, raw: true }))
+    })
+    Promise
+      .all(promises)
+      .then(results => {
+        resolve(results.filter(result => result.length > 0).length)
+      })
+  })
+}

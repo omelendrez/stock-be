@@ -3,7 +3,7 @@ const Sequelize = require('sequelize')
 const TableHints = Sequelize.TableHints;
 const Op = Sequelize.Op
 const sequelize = require("sequelize");
-const { ReS, ReE, updateOrCreate } = require('../helpers')
+const { ReS, ReE, updateOrCreatem, verifyDelete } = require('../helpers')
 
 const create = async (req, res) => {
   const { id } = req.body
@@ -50,23 +50,34 @@ const getAll = (req, res) => {
 module.exports.getAll = getAll
 
 const deleteRecord = (req, res) => {
-  return Unit
-    .findOne({
-      where: {
-        id: req.params.id
+  verifyDelete(['product'], {
+    unitId: {
+      [Op.eq]: req.params.id
+    }
+  })
+    .then(records => {
+      if (records === 0) {
+        return Unit
+          .findOne({
+            where: {
+              id: req.params.id
+            }
+          })
+          .then(unit =>
+            unit.destroy()
+              .then(unit => {
+                const resp = {
+                  message: `Unidad de medida "${unit.name}" eliminada`,
+                  unit
+                }
+                return ReS(res, resp, 200)
+              })
+              .catch(() => ReE(res, 'Error ocurrido intentando eliminar la unidad de medida'))
+          )
+          .catch(() => ReE(res, 'Error ocurrido intentando eliminar la unidad de medida'))
+      } else {
+        ReE(res, `Esta unidad de medida está siendo utilizada en ${records} tablas asociadas y por eso no puede ser eliminada`)
       }
     })
-    .then(unit =>
-      unit.destroy()
-        .then(unit => {
-          const resp = {
-            message: `Unidad de medida "${unit.name}" eliminada`,
-            unit
-          }
-          return ReS(res, resp, 200)
-        })
-        .catch(() => ReE(res, 'Error ocurrido intentando eliminar la unidad de medida'))
-    )
-    .catch(() => ReE(res, 'Error ocurrido intentando eliminar la unidad de medida'))
 }
 module.exports.deleteRecord = deleteRecord

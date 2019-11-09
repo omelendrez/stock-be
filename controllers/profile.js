@@ -2,7 +2,7 @@ const Profile = require('../models').profile
 const Sequelize = require('sequelize')
 const TableHints = Sequelize.TableHints;
 const Op = Sequelize.Op
-const { ReS, ReE, updateOrCreate } = require('../helpers')
+const { ReS, ReE, updateOrCreate, verifyDelete } = require('../helpers')
 
 const create = async (req, res) => {
   const { id } = req.body
@@ -36,23 +36,34 @@ const getAll = (req, res) => {
 module.exports.getAll = getAll
 
 const deleteRecord = (req, res) => {
-  return Profile
-    .findOne({
-      where: {
-        id: req.params.id
+  verifyDelete(['user'], {
+    profileId: {
+      [Op.eq]: req.params.id
+    }
+  })
+    .then(records => {
+      if (records === 0) {
+        return Profile
+          .findOne({
+            where: {
+              id: req.params.id
+            }
+          })
+          .then(profile =>
+            profile.destroy()
+              .then(profile => {
+                const resp = {
+                  message: `Perfil "${profile.name}" eliminado`,
+                  profile
+                }
+                return ReS(res, resp, 200)
+              })
+              .catch(() => ReE(res, 'Error ocurrido intentando eliminar el profile'))
+          )
+          .catch(() => ReE(res, 'Error ocurrido intentando eliminar el profile'))
+      } else {
+        ReE(res, `Este perfil está siendo utilizado en ${records} tablas asociadas y por eso no puede ser eliminado`)
       }
     })
-    .then(profile =>
-      profile.destroy()
-        .then(profile => {
-          const resp = {
-            message: `Perfil "${profile.name}" eliminado`,
-            profile
-          }
-          return ReS(res, resp, 200)
-        })
-        .catch(() => ReE(res, 'Error ocurrido intentando eliminar el profile'))
-    )
-    .catch(() => ReE(res, 'Error ocurrido intentando eliminar el profile'))
 }
 module.exports.deleteRecord = deleteRecord

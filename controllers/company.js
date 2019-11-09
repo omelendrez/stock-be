@@ -3,7 +3,7 @@ const Sequelize = require('sequelize')
 const TableHints = Sequelize.TableHints;
 const Op = Sequelize.Op
 const sequelize = require("sequelize");
-const { ReS, ReE, updateOrCreate } = require('../helpers')
+const { ReS, ReE, updateOrCreate, verifyDelete } = require('../helpers')
 
 const create = async (req, res) => {
   const { id } = req.body
@@ -49,23 +49,34 @@ const getAll = (req, res) => {
 module.exports.getAll = getAll
 
 const deleteRecord = (req, res) => {
-  return Company
-    .findOne({
-      where: {
-        id: req.params.id
+  verifyDelete(['category', 'customer', 'product', 'store', 'supplier', 'user', 'unit'], {
+    companyId: {
+      [Op.eq]: req.params.id
+    }
+  })
+    .then(records => {
+      if (records === 0) {
+        return Company
+          .findOne({
+            where: {
+              id: req.params.id
+            }
+          })
+          .then(company =>
+            company.destroy()
+              .then(company => {
+                const resp = {
+                  message: `Compañía "${company.name}" eliminada`,
+                  company
+                }
+                return ReS(res, resp, 200)
+              })
+              .catch(() => ReE(res, 'Error ocurrido intentando eliminar la compañía'))
+          )
+          .catch(() => ReE(res, 'Error ocurrido intentando eliminar la compañía'))
+      } else {
+        ReE(res, `Esta compañía está siendo utilizada en ${records} tablas asociadas y por eso no puede ser eliminada`)
       }
     })
-    .then(company =>
-      company.destroy()
-        .then(company => {
-          const resp = {
-            message: `Compañía "${company.name}" eliminada`,
-            company
-          }
-          return ReS(res, resp, 200)
-        })
-        .catch(() => ReE(res, 'Error ocurrido intentando eliminar la compañía'))
-    )
-    .catch(() => ReE(res, 'Error ocurrido intentando eliminar la compañía'))
 }
 module.exports.deleteRecord = deleteRecord
