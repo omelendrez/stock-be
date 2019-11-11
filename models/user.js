@@ -7,7 +7,6 @@ module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('user', {
     userName: {
       type: DataTypes.STRING,
-      allowNull: false,
       validate: {
         len: {
           args: [4, 30],
@@ -20,10 +19,10 @@ module.exports = (sequelize, DataTypes) => {
         msg: 'Nombre de usuario ya existe en la base de datos.'
       }
     },
+    fullName: DataTypes.STRING,
     password: DataTypes.STRING,
     email: {
       type: DataTypes.STRING,
-      allowNull: false,
       unique: {
         args: 'uniqueKey',
         msg: 'Email ya existe en la base de datos.'

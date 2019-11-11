@@ -28,7 +28,7 @@ const getAll = (req, res) => {
   return User
     .findAll({
       raw: true,
-      tableHint: TableHints.NOLOCK, attributes: ['id', 'userName', 'email',
+      tableHint: TableHints.NOLOCK, attributes: ['id', 'userName', 'fullName', 'email',
         'companyId', [sequelize.col('company.name'), 'company'],
         'statusId', [sequelize.col('status.name'), 'status'],
         'profileId', [sequelize.col('profile.name'), 'profile']
