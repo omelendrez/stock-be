@@ -3,7 +3,7 @@ const Sequelize = require('sequelize')
 const TableHints = Sequelize.TableHints;
 const Op = Sequelize.Op
 const sequelize = require("sequelize");
-const { ReS, ReE, updateOrCreatem, verifyDelete } = require('../helpers')
+const { ReS, ReE, updateOrCreate, verifyDelete } = require('../helpers')
 
 const create = async (req, res) => {
   const { id } = req.body
