@@ -20,10 +20,7 @@ module.exports = (sequelize, DataTypes) => {
         args: 'uniqueKey',
         msg: 'Nombre de empresa ya existe en la base de datos'
       }
-    }, statusId: {
-      type: DataTypes.TINYINT,
-      defaultValue: 1
-    }
+    }, statusId: DataTypes.TINYINT
   }, {});
   Company.associate = function (models) {
     // associations can be defined here

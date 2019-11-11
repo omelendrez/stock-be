@@ -27,10 +27,7 @@ module.exports = (sequelize, DataTypes) => {
     contact: DataTypes.STRING,
     vat: DataTypes.DECIMAL,
     companyId: DataTypes.INTEGER,
-    statusId: {
-      type: DataTypes.TINYINT,
-      defaultValue: 1
-    }
+    statusId: DataTypes.TINYINT
   }, {});
   Customer.associate = function (models) {
     // associations can be defined here

@@ -36,10 +36,7 @@ module.exports = (sequelize, DataTypes) => {
     address: DataTypes.STRING,
     contact: DataTypes.STRING,
     companyId: DataTypes.INTEGER,
-    statusId: {
-      type: DataTypes.TINYINT,
-      defaultValue: 1
-    }
+    statusId: DataTypes.TINYINT
   }, {});
   Supplier.associate = function (models) {
     // associations can be defined here

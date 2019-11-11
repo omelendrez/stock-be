@@ -30,10 +30,7 @@ module.exports = (sequelize, DataTypes) => {
     unitId: DataTypes.INTEGER,
     price: DataTypes.DECIMAL,
     companyId: DataTypes.INTEGER,
-    statusId: {
-      type: DataTypes.TINYINT,
-      defaultValue: 1
-    }
+    statusId: DataTypes.TINYINT
   }, {});
   Product.associate = function (models) {
     // associations can be defined here

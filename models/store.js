@@ -22,10 +22,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     companyId: DataTypes.INTEGER,
-    statusId: {
-      type: DataTypes.TINYINT,
-      defaultValue: 1
-    }
+    statusId: DataTypes.TINYINT
   }, {});
   Store.associate = function (models) {
     // associations can be defined here
