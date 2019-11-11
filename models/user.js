@@ -10,8 +10,8 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         len: {
-          args: [6, 30],
-          msg: 'Nombre de usuario debe tener entre 6 y 30 caracteres.'
+          args: [4, 30],
+          msg: 'Nombre de usuario debe tener entre 4 y 30 caracteres.'
         },
         notEmpty: { msg: 'Nombre de usuario es un campo obligatorio.' }
       },
@@ -30,12 +30,9 @@ module.exports = (sequelize, DataTypes) => {
       },
       validate: { isEmail: { msg: 'Email no es válido.' } }
     },
-    profileId: DataTypes.INTEGER,
+    profileId: DataTypes.TINYINT,
     companyId: DataTypes.INTEGER,
-    statusId: {
-      type: DataTypes.TINYINT,
-      defaultValue: 1
-    }
+    statusId: DataTypes.TINYINT
   }, {})
   User.associate = function (models) {
     // associations can be defined here
@@ -50,10 +47,10 @@ module.exports = (sequelize, DataTypes) => {
 
   User.prototype.comparePassword = async function (pw) {
     if (!this.password) {
-      throw new Error('Password was not set')
+      throw new Error('Password vacía')
     }
     const pass = await bcrypt_p.compare(pw, this.password)
-    if (!pass) throw new Error('Invalid password')
+    if (!pass) throw new Error('Password no válida')
     return this
   }
 

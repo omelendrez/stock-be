@@ -6,13 +6,6 @@ const sequelize = require("sequelize");
 const { ReS, ReE, updateOrCreate, noProps } = require('../helpers')
 
 const create = async (req, res) => {
-  const { email, userName } = req.body
-  const user = await User.findOne({ where: { [Op.or]: [{ email }, { userName }] } })
-  if (user) {
-    return res
-      .status(400)
-      .json({ success: false, message: 'Usuario o email ya registrado' })
-  }
   return User.create(req.body)
     .then(record => {
       const resp = {
