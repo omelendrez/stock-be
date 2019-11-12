@@ -26,8 +26,8 @@ module.exports = {
     },
     {
       userName: "mati",
-      password: "$2b$10$yPv9V6moZvlRHfzP6JqlHuDdnHKzcvZjoyiKyC0KjehOgRd8HqbaK",
       fullName: "Matias Mancinelli",
+      password: "$2b$10$yPv9V6moZvlRHfzP6JqlHuDdnHKzcvZjoyiKyC0KjehOgRd8HqbaK",
       email: "matias41071034@gmail.com",
       profileId: 1,
       companyId: 1,
