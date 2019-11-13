@@ -6,7 +6,24 @@ const sequelize = require("sequelize");
 const { ReS, ReE, updateOrCreate, verifyDelete } = require('../helpers')
 
 const create = async (req, res) => {
-  const { id } = req.body
+  const { id, code, name, companyId } = req.body
+
+  if (!code || !name || !companyId) {
+    return ReE(res, { success: false, message: 'Faltan datos. Complete los datos faltantes y vuelva a intentar' }, 422)
+  }
+
+  let found
+
+  found = await Category.findOne({ where: { code, companyId } })
+  if (found) {
+    return ReE(res, { success: false, message: 'Ese código de categoría ya existe en la base de datos' }, 422)
+  }
+
+  found = await Category.findOne({ where: { name, companyId } })
+  if (found) {
+    return ReE(res, { success: false, message: 'Ese nombre de categoría ya existe en la base de datos' }, 422)
+  }
+
   await updateOrCreate(Category,
     {
       id: {
