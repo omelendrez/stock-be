@@ -8,7 +8,7 @@ const { ReS, ReE, updateOrCreate } = require('../helpers')
 const create = async (req, res) => {
   const { id, code, name, companyId, categoryId, unitId, statusId } = req.body
 
-  if (!code || !name || !companyId || categoryId || unitId || !statusId) {
+  if (!code || !name || !companyId || !categoryId || !unitId || !statusId) {
     return ReE(res, { success: false, message: 'Faltan datos. Complete los datos faltantes y vuelva a intentar' }, 422)
   }
 

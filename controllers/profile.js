@@ -5,7 +5,12 @@ const Op = Sequelize.Op
 const { ReS, ReE, updateOrCreate, verifyDelete } = require('../helpers')
 
 const create = async (req, res) => {
-  const { id } = req.body
+  const { id, code, name } = req.body
+
+  if (!code || !name) {
+    return ReE(res, { success: false, message: 'Faltan datos. Complete los datos faltantes y vuelva a intentar' }, 422)
+  }
+
   await updateOrCreate(Profile,
     {
       id: {
