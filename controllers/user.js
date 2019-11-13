@@ -6,18 +6,19 @@ const sequelize = require("sequelize");
 const { ReS, ReE, updateOrCreate, noProps } = require('../helpers')
 
 const create = async (req, res) => {
-  /* TODO
-  Use this to avoid duplication per company
-  const { email, userName } = req.body
-  const user = await User.findOne({ where: { [Op.or]: [{ email }, { userName }] } })
-  if (user) {
-    return res
-      .status(400)
-      .json({ success: false, message: 'Usuario o email ya registrado' })
-  }
-  */
+  const { id, userName, email, profileId, companyId, statusId } = req.body
 
-  return User.create(req.body)
+  if (!userName || !email || !profileId || !companyId || !statusId) {
+    return ReE(res, { success: false, message: 'Faltan datos. Complete los datos faltantes y vuelva a intentar' }, 422)
+  }
+  await updateOrCreate(User,
+    {
+      id: {
+        [Op.eq]: id
+      }
+    },
+    req.body
+  )
     .then(record => {
       const resp = {
         message: 'Datos guardados satisfactoriamente',
@@ -26,6 +27,7 @@ const create = async (req, res) => {
       return ReS(res, resp, 201)
     })
     .catch(err => ReE(res, err, 422))
+
 }
 module.exports.create = create
 
