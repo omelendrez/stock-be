@@ -55,9 +55,19 @@ const getAll = (req, res) => {
   return Product
     .findAll({
       raw: true,
-      tableHint: TableHints.NOLOCK, attributes: ['id', 'code', 'name', 'minimum', 'lastPurchaseDate', 'lastPurchasePrice', 'lastSaleDate', 'lastSalePrice', 'price',
+      tableHint: TableHints.NOLOCK,
+      attributes: [
+        'id',
+        'code',
+        'name',
+        'minimum',
+        [sequelize.fn('date_format', sequelize.col('lastPurchaseDate'), '%d-%b-%y'), 'lastPurchaseDate'],
+        'lastPurchasePrice',
+        [sequelize.fn('date_format', sequelize.col('lastSaleDate'), '%d-%b-%y'), 'lastSaleDate'],
+        'lastSalePrice',
+        'price',
         'categoryId', [sequelize.col('category.name'), 'category'],
-        'unitId', [sequelize.col('unit.name'), 'unit'],
+        //        'unitId', [sequelize.col('unit.name'), 'unit'],
         'companyId', [sequelize.col('company.name'), 'company'],
         'statusId', [sequelize.col('status.name'), 'status']
       ],
