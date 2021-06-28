@@ -28,5 +28,14 @@
     "mysql2": "^1.6.5",
     "parse-error": "^0.2.0",
     "sequelize": "^5.8.7"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/omelendrez/stock-be.git"
+  },
+  "bugs": {
+    "url": "https://github.com/omelendrez/stock-be/issues"
+  },
+  "homepage": "https://github.com/omelendrez/stock-be#readme"
 }
